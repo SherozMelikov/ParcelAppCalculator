@@ -1,13 +1,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var weight: String = ""
-    @State private var width: String = ""
-    @State private var height: String = ""
-    @State private var depth: String = "" // Not used, but included in the form
-    @State private var cost: String = ""
-    @State private var errorMessage: String = ""
-    
+    @Environment(\.modelContext) private var modelContext
+    @AppStorage("weight") private var weight = ""
+    @AppStorage("height") private var height = ""
+    @AppStorage("depth") private var depth = ""
+    @AppStorage("cost") private var cost = ""
+    @AppStorage("width") private var width = ""
+    @AppStorage("errorMessage") private var errorMessage = ""
+    @AppStorage("postDate") private var postDate: Date = Date()
+
     var isdisabled: Bool {
         weight.isEmpty || depth.isEmpty || width.isEmpty || height.isEmpty
     }
@@ -24,7 +26,10 @@ struct ContentView: View {
             }
             .padding(.horizontal)
             .toggleStyle(SwitchToggleStyle(tint: .green))
-            
+            DatePicker(
+                "select Date",selection:   $postDate, in: ...Date(),
+                displayedComponents: .date
+            )
             // Weight Input
             HStack(alignment: .center, spacing: 10) {
                 Label("Weight (kg): ", systemImage: "")
@@ -109,6 +114,8 @@ struct ContentView: View {
             errorMessage = "Please enter valid numbers greater than 0."
             return
         }
+        let volume = lengthValue * widthValue * heightValue
+
 
         if useAdvancedPricing {
             if weightValue > 30 {
@@ -125,6 +132,23 @@ struct ContentView: View {
             let totalCost = calculateBasicCost(weight: weightValue, length: lengthValue, width: widthValue, height: heightValue)
 
             cost = String(format: "%.2f",totalCost)
+            // Create a new record (if this is part of the intended logic)
+            let newRecord = ParcelDataModel(
+                weight: String(weight),
+                volume: String(volume),
+                cost: String(totalCost),
+                postDate: postDate
+            )
+            // Insert the new record into the model context and save it
+            do {
+                modelContext.insert(newRecord) // Insert the new record into the context
+                try modelContext.save()        // Save the changes to the context
+                print("Record saved successfully.")
+            } catch {
+                print("Error saving the record: \(error.localizedDescription)")
+                errorMessage = "Error saving the record."
+            }
+
         }
     }
 
