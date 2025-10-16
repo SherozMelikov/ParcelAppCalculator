@@ -30,52 +30,10 @@ struct ContentView: View {
                 "select Date",selection:   $postDate, in: ...Date(),
                 displayedComponents: .date
             )
-            // Weight Input
-            HStack(alignment: .center, spacing: 10) {
-                Label("Weight (kg): ", systemImage: "")
-                    .labelStyle(.titleOnly)
-                    .frame(width: 120, alignment: .trailing)
-                TextField("Enter weight: ", text: $weight)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .border(Color.black, width: 2)
-                    .keyboardType(.decimalPad)
-            }
-            
-            // Height Input
-            HStack(alignment: .center, spacing: 10) {
-                Label("Height (cm): ", systemImage: "")
-                    .labelStyle(.titleOnly)
-                    .frame(width: 120, alignment: .trailing)
-                TextField("Enter height: ", text: $height)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .border(Color.black, width: 2)
-                    .keyboardType(.decimalPad)
-            }
-            
-            // Width Input
-            HStack(alignment: .center, spacing: 10) {
-                Label("Width (cm): ", systemImage: "")
-                    .labelStyle(.titleOnly)
-                    .frame(width: 120, alignment: .trailing)
-                TextField("Enter width: ", text: $width)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .border(Color.black, width: 2)
-                    .keyboardType(.decimalPad)
-            }
-            
-            
-            
-            // Depth Input
-            HStack(alignment: .center, spacing: 10) {
-                Label("Depth (cm): ", systemImage: "")
-                    .labelStyle(.titleOnly)
-                    .frame(width: 120, alignment: .trailing)
-                TextField("Enter depth: ", text: $depth)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .border(Color.black, width: 2)
-                    .keyboardType(.decimalPad)
-            }
-            
+            ValidationNumberField(label: "Wieght (kg)", value: $weight)
+            ValidationNumberField(label: "Height (m)", value: $height)
+            ValidationNumberField(label: "Width (m)", value: $width)
+            ValidationNumberField(label: "Length(m)", value: $depth)
             Button("Calculate Cost") {
                 calculateCost()
             }
@@ -189,6 +147,10 @@ struct ContentView: View {
         // 4. Minimum Charge
         return max(totalCost, 5.00)
     }
+    
+   
+    
+    
 }
 
 #Preview {
